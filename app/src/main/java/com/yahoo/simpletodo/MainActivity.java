@@ -1,6 +1,7 @@
 package com.yahoo.simpletodo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ public class MainActivity extends Activity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+    String toEdit;
 
     private void readItems () {
         return;
@@ -62,6 +64,7 @@ public class MainActivity extends Activity {
         items.add("one more Item");
 
         setupListViewListener();
+        setupListViewListenerEdit();
         readItems();
     }
 
@@ -92,7 +95,7 @@ public class MainActivity extends Activity {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
-        etNewItem.setText("Add another one");
+        etNewItem.setText("");
         writeItems();
     }
 
@@ -107,5 +110,31 @@ public class MainActivity extends Activity {
                     }
                 }
         );
+    }
+
+    public void setupListViewListenerEdit () {
+        // Toast.makeText(this, "click listener", Toast.LENGTH_SHORT).show();
+        lvItems.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
+                        Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
+                        toEdit = items.get(pos);
+                        intent.putExtra("editItem", toEdit);
+                        intent.putExtra("position", pos);
+                        startActivityForResult(intent, 20);
+                    }
+                }
+        );
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        if (resultCode == RESULT_OK) {
+            String receivedText = result.getExtras().getString("editText");
+            int receivedPosition = result.getIntExtra("position", -1);
+            if (receivedText != null) {// && !receivedText.equals(toEdit)) {
+                items.set(receivedPosition, receivedText);
+                itemsAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }
