@@ -12,8 +12,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     ArrayList<String> items;
@@ -22,22 +25,23 @@ public class MainActivity extends Activity {
     String toEdit;
 
     private void readItems () {
-        return;
-        /*
+        // return;
+
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir, "todo.txt");
+        Toast.makeText(this, todoFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
         try {
-            items = new ArrayList<String>(FileUtils.readLines(todoFile))
+            items = new ArrayList<String>(FileUtils.readLines(todoFile));
         }
         catch (IOException e) {
             items = new ArrayList<String>();
         }
-        */
+
     }
 
     private void writeItems () {
-        return;
-        /*
+        //return;
+
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir, "todo.txt");
         try {
@@ -46,13 +50,15 @@ public class MainActivity extends Activity {
         catch (IOException e) {
             e.printStackTrace();
         }
-        */
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        readItems();
 
         lvItems = (ListView) findViewById(R.id.lvItems);
         items = new ArrayList<String>();
@@ -65,7 +71,6 @@ public class MainActivity extends Activity {
 
         setupListViewListener();
         setupListViewListenerEdit();
-        readItems();
     }
 
     @Override
